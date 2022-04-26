@@ -1,0 +1,5 @@
+gcc test.c -o test -O3 -lm
+./test
+
+echo 
+echo "End"

@@ -1,0 +1,17 @@
+1.9891.e30f	696000	Sun
+1.899.e27f	69911	Jupiter
+5.6846.e26f	58232	Saturn
+1.0243.e26f	24662	Neptune
+8.6832.e25f	25362	Uranus
+5.9742.e24f	6371	Earth
+4.8685.e24f	6051	Venus
+6.4185.e23f	3390	Mars
+3.302.e23f	2439.7	Mecury
+1.482.e23f	2631.2	Ganymede (Moon of Jupiter)
+1.345.e23f	2575	Titan (Moon of Saturn)
+1.076.e23f	2410.3	Calisto (Moon of Jupiter)
+8.9319.e22f	1821.5	Io (Moon of Jupiter)
+7.3477.e22f	1737.1	Moon
+4.80.e22f	1561	Europa (Moon of Jupiter)
+2.147.e22f	1353.4	Triton (Moon of Neptune)
+10.001.e1f	0.01	Debris
