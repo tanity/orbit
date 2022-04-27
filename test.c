@@ -1,58 +1,112 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+
 #define G 6.67384e-11
-#define N 4
+#define N 10
+#define clrscr() printf("\e[1;1H\e[2J");
+
 // coordinates (m)
 double p[N][3] = {
 	{0, 0, 0},
 	{1.49597870700E11, 0, 0},
-	{1.49597870700E11, 3.840E8, 0},
-	{2.2425E11, 0, 5.0E8}
+	{1.49597870700E11, 3.84E8, 0},
+	{7.8E11, 0, 0}, //{1.29037E11, 7.45E10, 0}, // 7.8E11
+	{14.0E11, 0, 0},
+	{46.0E11, 0, 0},
+	{28.8E11, 0, 0},
+	{1.06E11, 0, 0},
+	{2.28E11, 0, 0},
+	{0.58E11, 0, 0}
 };
 
 // velocity (m/s)
 double v[N][3] = {
-	{0, 0, 0},
-	{0, 29.76E3, 0},
-	{-1.022E3, 29.76E3, 0},
-	{0, 24.0E3, 0}
+	{0, -16.010, 0}, // -12.54999
+	{0, 29.7874857E3, 0},
+	{-1.0189718E3, 29.7874857E3, 0},
+	{0, 13.045155E3, 0},
+	{0, 9.7371651E3, 0},
+	{0, 5.3717728E3, 0},
+	{0, 6.7889140E3, 0},
+	{0, 35.386990E3, 0},
+	{0, 24.128434E3, 0},
+	{0, 47.839051E3, 0}
+};
+
+char name[N][255] = {
+	"Sun",
+	"Earth",
+	"Moon",
+	"Jupiter",
+	"Saturn",
+	"Neptune",
+	"Uranus",
+	"Venus",
+	"Mars",
+	"Mecury"
 };
 
 double m[N] = {
-	1.98892E30,
-	5.9742E24,
-	7.36E22,
-	1.898E27
+	1.98892E30, // Sun
+	5.9742E24, // Earth
+	0.0736E24, // Moon
+	18.99E26, // Jupiter
+	5.6846E26, // Saturn
+	1.0243E26, // Neptune
+	0.86832E26, // Uranus
+	4.8685E24, // Venus
+	0.64185E24, //Mars
+	0.33302E24, //Mecury
 };
 
+double M = 0;
 
 double distance(double p1[3], double p2[3])
 {
 	return sqrt(pow(p2[0]-p1[0],2)+pow(p2[1]-p1[1],2)+pow(p2[2]-p1[2],2));
 }
 
+double speed(double v[3])
+{
+	double o[3]={0,0,0};
+	return distance(v,o);
+}
+
+void com(double *center)
+{
+	int i, n;
+		
+	for (n=0;n<3;n++)
+	{
+		center[n] = 0;
+		for (i=0; i<N; i++)
+		{
+			center[n]+=p[i][n]*m[i];
+		}
+		center[n]/=M;
+	}
+
+}
 
 int main()
 {
 	register double factor;
-	register double speed;
 	register int i,j;
-	double o[3]={0,0,0};
+	double c[3];
 
+	for(i=0;i<N;i++) M+=m[i];
 	for(long int t=0; t<(long int)86400*(long int)3652422; t++)
 	{
-		for(i=0; i<N; i++)
+		for (i=0; i<N; i++)
 		{
-			speed = distance(v[i],o);
-			for(j=0; j<N; j++)
+			for (j=0; j<N; j++)
 			{
 				if (i==j) continue;
 				factor = G * m[j] / pow(distance(p[i],p[j]),3);
 
-				for(int n=0;n<3;n++)
+				for (int n=0;n<3;n++)
 				{
-					//printf("[x%d]speed: %E (p[%d]-%E p[%d]-%E) v[%d][%d] - %E (%E)\n",n,speed,i,p[i][n],j,p[j][n],i,n,v[i][n],(p[i][n]-p[j][n])*factor);
 					v[i][n] += (p[j][n]-p[i][n]) * factor;
 				}
 			}
@@ -61,20 +115,54 @@ int main()
 				p[i][n]+=v[i][n];
 			}
 		}
-		if (!(t % 86400))
+		if (!(t % (3600*24*1)))
 		{
-			printf("======================\n* Position \nEarth (%E, %E, %E)\n\n* Velocity \nSun : %lf km/s \nEarth : %lf km/s \nMoon : %lf km/s \nJupiter : %lf km/s \n\n* Distance \nSun-Earth : %E km\nSun-Moon : %E\nSun-Jupiter : %E\nEarth-Moon : %E km\nEarth-Jupiter : %E km\n", 
-					p[1][0],p[1][1],p[1][2],
-					distance(v[0],o)/1000,
-					distance(v[1],o)/1000,
-					distance(v[2],o)/1000,
-					distance(v[3],o)/1000,
-					distance(p[0],p[1])/1000,
-					distance(p[0],p[2])/1000,
-					distance(p[0],p[3])/1000,
-					distance(p[1],p[2])/1000,
-					distance(p[1],p[3])/1000
-					);
+			clrscr();
+			printf("======================\n");
+			printf("* Position / Velocity(km/s)\n");
+			com(c);
+			for(i=0;i<N;i++)
+			{
+				printf("%s (%E, %E, %E) - (%lf, %lf, %lf)\n",name[i], p[i][0], p[i][1], p[i][2], v[i][0]/1000, v[i][1]/1000, v[i][2]/1000);
+			}
+			printf("Center of the mass (%E, %E, %E)\n", c[0], c[1], c[2]);
+			printf("Moon from the Earth (%E, %E, %E)\n", p[2][0]-p[1][0], p[2][1]-p[1][1], p[2][2]-p[1][2]);
+			printf("Earth from the Jupiter (%E, %E, %E)\n", p[1][0]-p[3][0], p[1][1]-p[3][1], p[1][2]-p[3][2]);
+			printf("\n");
+
+			printf("* Speed\n");
+			for(i=0;i<N;i++)
+			{
+				printf("%s : %lf km/s\n", name[i], speed(v[i])/1000);
+			}
+			printf("\n");
+
+
+			printf("* Distance\n");
+			for (i=0; i<N; i++)
+			{
+				for (j=i+1; j<4; j++)
+				{
+					printf("%s-%s : %E km\n", name[i], name[j], distance(p[i],p[j])/1000);
+				}
+			}
+			printf("Center of the mass and Sun : %d km\n", (int)(distance(c,p[0])/1000));
+
+			printf("\n");
+
+			printf("* Mechanical Energy\n");
+			double Em[N];
+			double Ep[N];
+			double Ek[N];
+
+			for (i=0; i<N; i++)
+			{
+				Ek[i] = (m[i] * pow(speed(v[i]),2) / 2);
+				Ep[i] = -G*m[0]*m[i]/distance(c,p[i]); // c or p[0] and in case p[0], i must be 1
+				Em[i] = Ek[i] + Ep[i];
+			}
+			printf("Earth + Moon + Jupiter: %E\n", Em[1]+Em[2]+Em[3]);
+			printf("Earth + Moon : %E\n", Em[1]+Em[2]);
 		}
 	}
 
