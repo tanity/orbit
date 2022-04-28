@@ -11,7 +11,7 @@ double p[N][3] = {
 	{0, 0, 0},
 	{1.49597870700E11, 0, 0},
 	{1.49597870700E11, 3.84E8, 0},
-	{7.8E11, 0, 0}, //{1.29037E11, 7.45E10, 0}, // 7.8E11
+	{7.8E11, 0, 0},
 	{14.0E11, 0, 0},
 	{46.0E11, 0, 0},
 	{28.8E11, 0, 0},
@@ -22,7 +22,7 @@ double p[N][3] = {
 
 // velocity (m/s)
 double v[N][3] = {
-	{0, 0, 0}, // -16.010
+	{0, -16.010, 0}, // -16.010
 	{0, 29.7874857E3, 0},
 	{-1.0189718E3, 29.7874857E3, 0},
 	{0, 13.045155E3, 0},
@@ -96,26 +96,26 @@ int main()
 	double c[3];
 
 	for(i=0;i<N;i++) M+=m[i];
-	for(long int t=0; t<(long int)86400*16*3652422; t++)
+	for(long int t=0; t<(long int)86400*32*3652422; t++)
 	{
-		for (i=1; i<N; i++)
+		for (i=0; i<N; i++)
 		{
 			for (j=0; j<N; j++)
 			{
 				if (i==j) continue;
-				factor = G * m[j] / pow(distance(p[i],p[j]),3)*0.0625;
+				factor = G * m[j] / pow(distance(p[i],p[j]),3);
 
 				for (int n=0;n<3;n++)
 				{
-					v[i][n] += (p[j][n]-p[i][n]) * factor;
+					v[i][n] += (p[j][n]-p[i][n]) * factor * 0.03125;
 				}
 			}
 			for(int n=0;n<3;n++)
-			{                                                                                   
-				p[i][n]+=v[i][n]*0.0625;
+			{
+				p[i][n]+=v[i][n] * 0.03125;
 			}
 		}
-		if (!(t % (3600*16)))
+		if (!(t % (3600*24*32)))
 		{
 			clrscr();
 			printf("======================\n");
@@ -125,7 +125,7 @@ int main()
 			{
 				printf("%s (%E, %E, %E) - (%lf, %lf, %lf)\n",name[i], p[i][0], p[i][1], p[i][2], v[i][0]/1000, v[i][1]/1000, v[i][2]/1000);
 			}
-			printf("Center of the mass (%E, %E, %E)\n", c[0], c[1], c[2]);
+			printf("= Center of the mass (%E, %E, %E)\n", c[0], c[1], c[2]);
 			printf("Moon from the Earth (%E, %E, %E)\n", p[2][0]-p[1][0], p[2][1]-p[1][1], p[2][2]-p[1][2]);
 			printf("Earth from the Jupiter (%E, %E, %E)\n", p[1][0]-p[3][0], p[1][1]-p[3][1], p[1][2]-p[3][2]);
 			printf("\n");
@@ -159,7 +159,7 @@ int main()
 			for (i=1; i<N; i++)
 			{
 				Ek[i] = (m[i] * pow(speed(v[i]),2) / 2);
-				Ep[i] = -G*m[0]*m[i]/distance(p[0],p[i]); // c or p[0] and in case p[0], i must be 1
+				Ep[i] = -G*m[0]*m[i]/distance(p[0],p[i]);
 				Em[i] = Ek[i] + Ep[i];
 				Esum += Em[i];
 			}
