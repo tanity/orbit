@@ -22,7 +22,7 @@ double p[N][3] = {
 
 // velocity (m/s)
 double v[N][3] = {
-	{0, -16.010, 0}, // -12.54999
+	{0, 0, 0}, // -16.010
 	{0, 29.7874857E3, 0},
 	{-1.0189718E3, 29.7874857E3, 0},
 	{0, 13.045155E3, 0},
@@ -96,14 +96,14 @@ int main()
 	double c[3];
 
 	for(i=0;i<N;i++) M+=m[i];
-	for(long int t=0; t<(long int)86400*(long int)3652422; t++)
+	for(long int t=0; t<(long int)86400*16*3652422; t++)
 	{
-		for (i=0; i<N; i++)
+		for (i=1; i<N; i++)
 		{
 			for (j=0; j<N; j++)
 			{
 				if (i==j) continue;
-				factor = G * m[j] / pow(distance(p[i],p[j]),3);
+				factor = G * m[j] / pow(distance(p[i],p[j]),3)*0.0625;
 
 				for (int n=0;n<3;n++)
 				{
@@ -112,10 +112,10 @@ int main()
 			}
 			for(int n=0;n<3;n++)
 			{                                                                                   
-				p[i][n]+=v[i][n];
+				p[i][n]+=v[i][n]*0.0625;
 			}
 		}
-		if (!(t % (3600*24*1)))
+		if (!(t % (3600*16)))
 		{
 			clrscr();
 			printf("======================\n");
@@ -154,15 +154,18 @@ int main()
 			double Em[N];
 			double Ep[N];
 			double Ek[N];
+			double Esum = 0;
 
-			for (i=0; i<N; i++)
+			for (i=1; i<N; i++)
 			{
 				Ek[i] = (m[i] * pow(speed(v[i]),2) / 2);
-				Ep[i] = -G*m[0]*m[i]/distance(c,p[i]); // c or p[0] and in case p[0], i must be 1
+				Ep[i] = -G*m[0]*m[i]/distance(p[0],p[i]); // c or p[0] and in case p[0], i must be 1
 				Em[i] = Ek[i] + Ep[i];
+				Esum += Em[i];
 			}
-			printf("Earth + Moon + Jupiter: %E\n", Em[1]+Em[2]+Em[3]);
+			printf("All : %1.16e\n", Esum);
 			printf("Earth + Moon : %E\n", Em[1]+Em[2]);
+			printf("Earth + Moon + Jupiter : %E\n", Em[1]+Em[2]+Em[3]);
 		}
 	}
 
