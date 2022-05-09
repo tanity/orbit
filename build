@@ -1,5 +1,4 @@
 gcc test.c -o test -O3 -lm
+sleep 5
 ./test
 
-echo 
-echo "End"

@@ -60,6 +60,43 @@ double m[N] = {
 	0.33302E24, //Mecury
 };
 
+// How much precision required for the calculation of the orbits
+// and we will decide at the beginning of the program.
+// from the initial values
+//
+// and the absolute timing will be replaced by tick
+// and the ticks will be basically expressed as the divided timings
+// we can calculate how much absolute time (seconds) have passed
+// from the ticks,
+//
+
+int precision[N];
+
+//
+long long ticks[N];
+
+// We can calculate ticks + 2^prec from this realm.
+//
+// how we calculate the ticks!
+//
+// for example, it can be expressed like this.
+//
+// 2^0 = 1 ticks = 1 seconds
+// 2^4 = 16 ticks = 1 seconds
+// 2^5 = 32 ticks = 1 seconds
+// 2^7 = 128 ticks = 1 seconds
+// 2^8 = 256 ticks = 1 seconds
+// 2^10 = 1024 ticks = 1 seconds
+// 2^16 = 65536 ticks = 1 seconds
+//
+// if it is the case, the max precision will be limited.
+// and we already have limited precision 
+//  because of the double floating point
+// 
+// we will use 16 bits of precision as the default value.
+// and use long long
+// and the max time rendered will be 891 million years
+
 double M = 0;
 
 double distance(double p1[3], double p2[3])
