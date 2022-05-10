@@ -146,11 +146,11 @@ void sort_precision()
 	}
 }
 
-void get_precision_order()
+void get_precisionr()
 {
 	short i, j;
 	
-	sort_precision();
+	//sort_precision();
 }
 
 
@@ -172,6 +172,9 @@ void centroid(double *center)
 
 int main()
 {
+	//subtotal of displacement
+	double sd[N]={0,};
+	unsigned short calc_n; 
 	register double factor;
 	register int i, j, c, d;
 	double c[3];
@@ -188,11 +191,12 @@ int main()
 	//{
 	while (true)
 	{
-		get_precision_order();
+		get_precision();
 		
 		for (c=0; c<N; c++)
 		{
-			i = porder[c];
+			//i = porder[c];
+			i = c;
 			for (j=0; j<N; j++)
 			{
 				if (i==j) continue;
